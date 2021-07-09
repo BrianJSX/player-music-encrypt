@@ -12,6 +12,7 @@
     <input type="button" value="PLAY" onclick="play()">
 
     <audio id="audio" src=""></audio>
+    <div id="controlMusic"></div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
     <script>
@@ -30,8 +31,9 @@
                 return decipher;
             }
         };
-        
+
         let url = "https://res.cloudinary.com/foxyplays989/video/upload/v1558369838/LetsGo.mp3";
+        listAudio = [];
         let cipher = crypt.encrypt(url);
         const audio = document.getElementById("audio");
         audio.src = cipher;
@@ -41,14 +43,25 @@
             var decipher = crypt.decrypt(cipher);
             playMusic(decipher, audio);
         }
+        
+        function createDom(decipher, audio) {
+            let newAudio = document.createElement("audio");
+            newAudio.setAttribute("id", "musicIsPlay");
+            newAudio.src = decipher;
+            listAudio.push(newAudio);
+            newAudio.play();
+        }
 
         function playMusic(decipher, audio) {
-            //kiểm tra xem có class đó chưa
-            //nếu chưa thì tao mới
-            //có rồi thì remove class xong r tạo cái mới
-            let newAudio = audio.cloneNode(true);
-            newAudio.src = decipher;
-            newAudio.play();
+            if (listAudio.length > 0) {
+                listAudio.forEach(el => {
+                    el.pause();
+                });
+                listAudio = [];
+                createDom(decipher, audio);
+            } else {
+                createDom(decipher, audio);
+            }
         }
 
     </script>
